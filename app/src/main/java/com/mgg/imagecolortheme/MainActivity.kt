@@ -22,15 +22,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class MainActivity : AppCompatActivity() {
 
-    var t1: TextView? = null
-    var t2: TextView? = null
-    var t3: TextView? = null
-    var t4: TextView? = null
-    var t5: TextView? = null
-    var t6: TextView? = null
+    private var t1: TextView? = null
+    private var t2: TextView? = null
+    private var t3: TextView? = null
+    private var t4: TextView? = null
+    private var t5: TextView? = null
+    private var t6: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -136,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun getMainThemeColor(bitmap: Bitmap): MMCQ.ThemeColor? {
+    private suspend fun getMainThemeColor(bitmap: Bitmap): MMCQ.ThemeColor? {
         val themeColors: List<MMCQ.ThemeColor>
         withContext(Dispatchers.Default) {
             val mmcq = MMCQ(bitmap, 3)
@@ -180,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         return if (themeColors.isEmpty()) null else themeColors[0]
     }
 
-    fun Activity.setThemeColor(themeColor: MMCQ.ThemeColor?) {
+    private fun Activity.setThemeColor(themeColor: MMCQ.ThemeColor?) {
         if (themeColor == null) return
         val toolbar = findViewById(R.id.action_bar) as? Toolbar ?: return
         toolbar.setBackgroundColor(themeColor.color)
