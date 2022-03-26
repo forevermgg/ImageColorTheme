@@ -23,11 +23,8 @@ add_library( # Sets the name of the library.
 
              # Sets the library as a shared library.
              SHARED
-             ${QUANT_COLOR_SRC}/src/colorquant.h
              ${QUANT_COLOR_SRC}/src/colorquant.cpp
-             ${QUANT_COLOR_SRC}/src/pix.h
              ${QUANT_COLOR_SRC}/src/pix.cpp
-             ${QUANT_COLOR_SRC}/src/vbox.h
              ${QUANT_COLOR_SRC}/src/vbox.cpp
         # Provides a relative path to your source file(s).
              quantcolor.cpp )
