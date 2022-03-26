@@ -8,12 +8,12 @@ import android.util.Log;
 import android.util.SparseLongArray;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -40,8 +40,8 @@ public class MMCQ {
     private final int mHeight;
     private final SparseLongArray mPixHisto = new SparseLongArray();
     private double mFraction = 0.85d;
-    private int mSigbits = 5;
-    private int mRshift = 8 - mSigbits;
+    private int mGigabits = 5;
+    private int mShift = 8 - mGigabits;
 
 
     /**
@@ -70,8 +70,8 @@ public class MMCQ {
         if (sigbits < 5 || sigbits > 6) {
             throw new IllegalArgumentException("sigbits should between [5, 6]!");
         }
-        mSigbits = sigbits;
-        mRshift = 8 - mSigbits;
+        mGigabits = sigbits;
+        mShift = 8 - mGigabits;
 
         int height = bitmap.getHeight();
         int width = bitmap.getWidth();
@@ -191,6 +191,7 @@ public class MMCQ {
                 break;
             }
             VBox vBox = boxQueue.poll();
+            assert vBox != null;
             if (vBox.mNumPixs == 0) {
                 Log.w(TAG, "Vbox has no pixels");
                 //boxQueue.offer(vBox);
@@ -264,9 +265,9 @@ public class MMCQ {
             if (alpha < 128) {
                 continue;
             }
-            int red = Color.red(color) >> mRshift;
-            int green = Color.green(color) >> mRshift;
-            int blue = Color.blue(color) >> mRshift;
+            int red = Color.red(color) >> mShift;
+            int green = Color.green(color) >> mShift;
+            int blue = Color.blue(color) >> mShift;
             int colorIndex = getColorIndexWithRgb(red, green, blue);
             long count = mPixHisto.get(colorIndex);
             mPixHisto.put(colorIndex, count + 1);
@@ -274,14 +275,14 @@ public class MMCQ {
     }
 
     private VBox createVBox() {
-        int rMax = getMax(COLOR_RED) >> mRshift;
-        int rMin = getMin(COLOR_RED) >> mRshift;
-        int gMax = getMax(COLOR_GREEN) >> mRshift;
-        int gMin = getMin(COLOR_GREEN) >> mRshift;
-        int bMax = getMax(COLOR_BLUE) >> mRshift;
-        int bMin = getMin(COLOR_BLUE) >> mRshift;
+        int rMax = getMax(COLOR_RED) >> mShift;
+        int rMin = getMin(COLOR_RED) >> mShift;
+        int gMax = getMax(COLOR_GREEN) >> mShift;
+        int gMin = getMin(COLOR_GREEN) >> mShift;
+        int bMax = getMax(COLOR_BLUE) >> mShift;
+        int bMin = getMin(COLOR_BLUE) >> mShift;
 
-        return new VBox(rMin, rMax, gMin, gMax, bMin, bMax, 1 << mRshift, mPixHisto);
+        return new VBox(rMin, rMax, gMin, gMax, bMin, bMax, 1 << mShift, mPixHisto);
     }
 
     private int getMax(@ColorPart int which) {
@@ -318,13 +319,10 @@ public class MMCQ {
         int popColors = (int) (mMaxColor * mFraction);
         iterCut(popColors, pOneQueue);
 
-        PriorityQueue<VBox> boxQueue = new PriorityQueue<>(mMaxColor, new Comparator<VBox>() {
-            @Override
-            public int compare(VBox o1, VBox o2) {
-                long priority1 = o1.getPriority() * o1.mVolume;
-                long priority2 = o2.getPriority() * o2.mVolume;
-                return Long.compare(priority1, priority2);
-            }
+        PriorityQueue<VBox> boxQueue = new PriorityQueue<>(mMaxColor, (o1, o2) -> {
+            long priority1 = o1.getPriority() * o1.mVolume;
+            long priority2 = o2.getPriority() * o2.mVolume;
+            return Long.compare(priority1, priority2);
         });
 
         boxQueue.addAll(pOneQueue);
@@ -339,6 +337,7 @@ public class MMCQ {
 
         while (!pOneQueue.isEmpty()) {
             VBox vBox = pOneQueue.poll();
+            assert vBox != null;
             double proportion = (double) vBox.mNumPixs / oriVBox.mNumPixs;
             if (proportion < 0.05) {
                 continue;
@@ -385,7 +384,7 @@ public class MMCQ {
             final int rl = Math.abs(r2 - r1) + 1;
             final int gl = Math.abs(g2 - g1) + 1;
             final int bl = Math.abs(b2 - b1) + 1;
-            mVolume = rl * gl * bl;
+            mVolume = (long) rl * gl * bl;
             final int max = Math.max(Math.max(rl, gl), bl);
             if (max == rl) {
                 mAxis = COLOR_RED;
@@ -509,8 +508,7 @@ public class MMCQ {
 
         @Override
         public int compareTo(ThemeColor themeColor) {
-            double oPriority = themeColor.mPriority;
-            return Double.compare(oPriority, mPriority);
+            return Double.compare(themeColor.mPriority, mPriority);
         }
 
         public int getColor() {
@@ -572,6 +570,7 @@ public class MMCQ {
             }
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "ThemeColor{" +
