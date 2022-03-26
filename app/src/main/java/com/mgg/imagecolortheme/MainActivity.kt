@@ -1,6 +1,7 @@
 package com.mgg.imagecolortheme
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -18,11 +19,17 @@ import androidx.appcompat.widget.LinearLayoutCompat.HORIZONTAL
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
+import com.mgg.quantcolor.ColorQuant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
+
+
 
     private var t1: TextView? = null
     private var t2: TextView? = null
@@ -51,6 +58,27 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+        val path = this@MainActivity.cacheDir.path + "test.png"
+        if (!File(path).exists()) {
+            copyFromAsset(this, "test.png", path)
+        }
+        ColorQuant.colorQuant(path)
+    }
+
+    private fun copyFromAsset(ct: Context, fileName: String, targetPath: String) {
+        try {
+            ct.assets.open(fileName).use { `in` ->
+                FileOutputStream(targetPath).use { out ->
+                    val buffer = ByteArray(1024)
+                    var read: Int
+                    while (`in`.read(buffer).also { read = it } != -1) {
+                        out.write(buffer, 0, read)
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("tag", "Failed to copy asset file: ", e)
         }
     }
 
@@ -139,7 +167,9 @@ class MainActivity : AppCompatActivity() {
         val themeColors: List<MMCQ.ThemeColor>
         withContext(Dispatchers.Default) {
             val mmcq = MMCQ(bitmap, 3)
-            themeColors = mmcq.quantize()
+            themeColors = timeIt("MMCQ:") {
+                mmcq.quantize()
+            }
             if (themeColors != null) {
                 withContext(Dispatchers.Main) {
                     val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
@@ -186,5 +216,13 @@ class MainActivity : AppCompatActivity() {
         toolbar.setTitleTextColor(themeColor.titleTextColor)
         toolbar.setSubtitleTextColor(themeColor.titleTextColor)
         window.statusBarColor = themeColor.color
+    }
+
+    fun <T> timeIt(message: String = "", block: () -> T): T {
+        val start = System.currentTimeMillis()
+        val r = block()
+        val end = System.currentTimeMillis()
+        Log.e("timeIt", "$message: ${end - start} ms")
+        return r
     }
 }
