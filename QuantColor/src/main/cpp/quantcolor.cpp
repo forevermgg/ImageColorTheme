@@ -67,7 +67,7 @@ int run(const std::string& filename, int depth, std::string& result) {
   }
   auto colorMapArray = cmap->array;
   for (auto& item : (*colorMapArray)) {
-    LOGE("rgb(%d, %d, %d) %lu \n", item->red, item->green, item->blue,
+    LOGE("rgb(%d, %d, %d) %zu \n", item->red, item->green, item->blue,
          item->count);
     LOGE("rgb2hex %s\n",
          rgb2hex(item->red, item->green, item->blue, true).c_str());
@@ -85,7 +85,7 @@ int run(const std::string& filename, int depth, std::string& result) {
 }
 
 int file_size(std::string filename) {
-  struct stat statbuf;
+  struct stat statbuf{};
   stat(filename.c_str(), &statbuf);
   const int size = statbuf.st_size;
   return size;
@@ -108,7 +108,7 @@ std::string JavaStringToString(JNIEnv* env, jstring str) {
   if (env == nullptr || str == nullptr) {
     return "";
   }
-  const jchar* chars = env->GetStringChars(str, NULL);
+  const jchar* chars = env->GetStringChars(str, nullptr);
   if (chars == nullptr) {
     return "";
   }
