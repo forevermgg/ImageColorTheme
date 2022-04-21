@@ -29,8 +29,6 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-
-
     private var t1: TextView? = null
     private var t2: TextView? = null
     private var t3: TextView? = null
@@ -63,7 +61,9 @@ class MainActivity : AppCompatActivity() {
         if (!File(path).exists()) {
             copyFromAsset(this, "test.png", path)
         }
-        ColorQuant.colorQuant(path)
+        val colors = ColorQuant.colorQuant(path)
+        val colorsList = colors.split(",")
+        Log.e("ColorQuant", colorsList.toString())
     }
 
     private fun copyFromAsset(ct: Context, fileName: String, targetPath: String) {

@@ -8,6 +8,6 @@ class ColorQuant {
         }
 
         @JvmStatic
-        external fun colorQuant(imagePath: String)
+        external fun colorQuant(imagePath: String): String
     }
 }
