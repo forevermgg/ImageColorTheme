@@ -67,14 +67,14 @@ int run(const std::string& filename, int depth, std::string& result) {
   }
   auto colorMapArray = cmap->array;
   for (auto& item : (*colorMapArray)) {
-    LOGE("rgb(%d, %d, %d) %zu \n", item->red, item->green, item->blue,
+    LOGD("rgb(%d, %d, %d) %zu \n", item->red, item->green, item->blue,
          item->count);
-    LOGE("rgb2hex %s\n",
+    LOGD("rgb2hex %s\n",
          rgb2hex(item->red, item->green, item->blue, true).c_str());
     result.append(rgb2hex(item->red, item->green, item->blue, true));
     result.append(",");
   }
-  LOGE("result: %s\n", result.c_str());
+  LOGD("result: %s\n", result.c_str());
   std::string blanks(",");
   result.erase(0, result.find_first_not_of(blanks));
   result.erase(result.find_last_not_of(blanks) + 1);

@@ -61,9 +61,15 @@ class MainActivity : AppCompatActivity() {
         if (!File(path).exists()) {
             copyFromAsset(this, "test.png", path)
         }
-        val colors = ColorQuant.colorQuant(path)
-        val colorsList = colors.split(",")
-        Log.e("ColorQuant", colorsList.toString())
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val colors = ColorQuant.getColorQuant(path)
+                withContext(Dispatchers.Main) {
+                    val colorsList = colors.split(",")
+                    Log.e("ColorQuant", colorsList.toString())
+                }
+            }
+        }
     }
 
     private fun copyFromAsset(ct: Context, fileName: String, targetPath: String) {
