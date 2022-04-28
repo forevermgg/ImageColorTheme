@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = themeColor.color
     }
 
-    fun <T> timeIt(message: String = "", block: () -> T): T {
+    private fun <T> timeIt(message: String = "", block: () -> T): T {
         val start = System.currentTimeMillis()
         val r = block()
         val end = System.currentTimeMillis()
