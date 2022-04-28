@@ -25,7 +25,7 @@ int file_size(std::string filename);
 
 std::string rgb2hex(int r, int g, int b, bool with_head);
 
-int run(const std::string& filename, int depth, std::string& result) {
+int ColorQuant(const std::string& filename, int depth, std::string& result) {
   std::cout << filename << std::endl;
   int f_size = file_size(filename) / 3;
   if (depth == 4) {
@@ -134,6 +134,6 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_com_mgg_quantcolor_ColorQuant_colorQuant(JNIEnv* env, jclass clazz,
                                               jstring image_path) {
   std::string result;
-  run(JavaStringToString(env, image_path), 4, result);
+  ColorQuant(JavaStringToString(env, image_path), 4, result);
   return StringToJavaString(env, result);
 }
