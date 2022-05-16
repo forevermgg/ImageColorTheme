@@ -141,20 +141,15 @@ class MainActivity : AppCompatActivity() {
                 }
                 findViewById<LinearLayoutCompat>(R.id.llImageColorTheme).addView(llLinearLayoutCompat)
                 run {
-                    //柔和而暗的颜色
-                    //柔和而暗的颜色
+                    // 柔和而暗的颜色
                     val darkMutedColor = palette.getDarkMutedColor(Color.BLUE)
-                    //鲜艳和暗的颜色
-                    //鲜艳和暗的颜色
+                    // 鲜艳和暗的颜色
                     val darkVibrantColor = palette.getDarkVibrantColor(Color.BLUE)
-                    //亮和鲜艳的颜色
-                    //亮和鲜艳的颜色
+                    // 亮和鲜艳的颜色
                     val lightVibrantColor = palette.getLightVibrantColor(Color.BLUE)
-                    //亮和柔和的颜色
-                    //亮和柔和的颜色
+                    // 亮和柔和的颜色
                     val lightMutedColor = palette.getLightMutedColor(Color.BLUE)
-                    //柔和颜色
-                    //柔和颜色
+                    // 柔和颜色
                     val mutedColor = palette.getMutedColor(Color.BLUE)
                     val vibrantColor = palette.getVibrantColor(Color.BLUE)
 
