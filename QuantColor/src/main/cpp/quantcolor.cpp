@@ -85,7 +85,7 @@ int ColorQuant(const std::string& filename, int depth, std::string& result) {
 }
 
 int file_size(std::string filename) {
-  struct stat statbuf{};
+  struct stat statbuf {};
   stat(filename.c_str(), &statbuf);
   const int size = statbuf.st_size;
   return size;
