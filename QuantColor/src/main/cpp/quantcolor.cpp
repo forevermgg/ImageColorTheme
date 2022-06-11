@@ -131,7 +131,7 @@ jstring StringToJavaString(JNIEnv* env, const std::string& u8_string) {
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_mgg_quantcolor_ColorQuant_colorQuant(JNIEnv* env, jclass clazz,
+Java_com_mgg_quantcolor_ColorQuant_colorQuant(JNIEnv* env, jclass _,
                                               jstring image_path) {
   std::string result;
   ColorQuant(JavaStringToString(env, image_path), 4, result);
